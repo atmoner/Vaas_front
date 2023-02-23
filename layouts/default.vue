@@ -90,7 +90,7 @@ export default {
           to: '/governance'
         }
       ],
-      miniVariant: true,
+      miniVariant: false,
       right: true,
       rightDrawer: false,
       title: 'cros-nest dapp'
@@ -109,12 +109,9 @@ export default {
   methods: {
     async keplrConnect() {
       await this.$store.dispatch('data/keplrConnect')
-      this.miniVariant = false
 
       if(!this.isForbid)
         await this.$store.dispatch('data/refresh')
-
-
     },
     async logout() {
       const store = useDataStore()
