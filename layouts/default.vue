@@ -1,5 +1,6 @@
 <template>
   <v-app>
+
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -36,7 +37,7 @@
       >
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
-
+ 
       <v-toolbar-title>{{ title }}  </v-toolbar-title>
       <v-spacer />
         <v-btn
@@ -76,8 +77,8 @@ export default {
     return {
       isMobile: false,
       clipped: true,
-      drawer: false,
-      fixed: true,
+      drawer: true,
+      fixed: false,
       items: [
         {
           icon: 'mdi-apple-keyboard-command',
