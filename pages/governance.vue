@@ -62,7 +62,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in allProposals" :key="item.txhash">
+                <tr v-for="item in finalProps" :key="item.txhash">
                   <!--{{ item }}-->
                   <td>{{ item.proposal_id }}</td>
                   <td>
@@ -77,6 +77,7 @@
                       <v-icon>mdi-vote-outline</v-icon>
                     </v-btn>
                   </td>
+                  
                   <td v-if="item.votedValue">
                     <v-chip v-if="item.votedValue === 'VOTE_OPTION_YES'" color="green" class="ma-2" label>
                       Voted YES
@@ -163,6 +164,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import axios from 'axios'
 import { SigningStargateClient, defaultRegistryTypes } from "@cosmjs/stargate";
 import bech32 from 'bech32'
 import cosmosConfig from '~/cosmos.config'
@@ -175,6 +177,7 @@ export default {
     voteFor: '',
     selected: [],
     dislableSend: true,
+    finalProps: '',
       cardsVote: [
         { title: 'Yes', flex: 5 },
         { title: 'No', flex: 5 },
@@ -190,19 +193,35 @@ export default {
         "nameWallet",
         "allProposals",
         "mainValidator",
-        "chainSelected"
+        "chainSelected",
+        "selectedPrefix"
     ]),
   },
-  async mounted() {
-     console.log(this.islogged)
+  async beforeMount() {
+ 
       if (!this.islogged)
         this.$router.push({path: "/"})
 
 
 
     await this.$store.dispatch('data/getAllProposals')
+    
 
   },
+  async mounted () {
+    console.log(this.allProposals)
+    
+    let decode = bech32.decode(this.mainValidator)
+    const valSmallAddress = bech32.encode(this.selectedPrefix, decode.words)
+    let finalProps = await this.allProposals
+    finalProps.forEach(async (item) => {
+      let checkIsVoted = await axios.get(cosmosConfig[this.chainSelected].apiURL + '/cosmos/gov/v1beta1/proposals/'+item.proposal_id+'/votes/' + valSmallAddress)
+      
+      item.votedValue = checkIsVoted.data.vote.options[0].option
+    });  
+    console.log(this.allProposals) 
+    this.finalProps = finalProps
+  },  
   methods: {
     async voteToId(id) {
       this.dialVote = true

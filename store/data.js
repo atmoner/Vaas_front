@@ -186,15 +186,16 @@ export const actions = {
   },
   async getAllProposals({ commit, state }) {
     let getAllProposals = await axios.get(cosmosConfig[state.chainSelected].apiURL + '/cosmos/gov/v1beta1/proposals?proposal_status=2')
-
-    if (this.islogged) {
-      let decode = bech32.decode(this.mainValidator)
-      const valSmallAddress = bech32.encode(this.selectedPrefix, decode.words)
+ 
+    /*if (state.islogged) {
+      let decode = bech32.decode(state.mainValidator)
+      const valSmallAddress = bech32.encode(state.selectedPrefix, decode.words)
       getAllProposals.data.proposals.forEach(async (item) => {
         let checkIsVoted = await axios.get(cosmosConfig[state.chainSelected].apiURL + '/cosmos/gov/v1beta1/proposals/'+item.proposal_id+'/votes/' + valSmallAddress)
+        console.log(checkIsVoted)
         item.votedValue = checkIsVoted.data.vote.options[0].option
       });
-    }
+    }*/
 
     commit('setAllProposals', getAllProposals.data.proposals)
   },
