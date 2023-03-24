@@ -112,7 +112,7 @@ export const actions = {
           break;
 
         default:
-          console.log("Sorry, dont know " + item.tx.body.messages[0]['@type'] + ".");
+          //console.log("Sorry, dont know " + item.tx.body.messages[0]['@type'] + ".");
           typeReadable = 'Unknown'
           finalAmount = ''
           break;
@@ -171,7 +171,6 @@ export const actions = {
   },
   async getTokenPrice({ commit, state }) {
     let tokenPrice = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=' + cosmosConfig[state.chainSelected].coingeckoId + '&vs_currencies=usd')
-   // console.log(tokenPrice.data[cosmosConfig[state.chainSelected].coingeckoId].usd)
     commit('setTokenPrice', tokenPrice.data[cosmosConfig[state.chainSelected].coingeckoId].usd)
   },
   async getValData({ commit, state }) {
@@ -187,15 +186,14 @@ export const actions = {
   async getAllProposals({ commit, state }) {
     let getAllProposals = await axios.get(cosmosConfig[state.chainSelected].apiURL + '/cosmos/gov/v1beta1/proposals?proposal_status=2')
  
-    /*if (state.islogged) {
+    if (state.islogged) {
       let decode = bech32.decode(state.mainValidator)
       const valSmallAddress = bech32.encode(state.selectedPrefix, decode.words)
       getAllProposals.data.proposals.forEach(async (item) => {
         let checkIsVoted = await axios.get(cosmosConfig[state.chainSelected].apiURL + '/cosmos/gov/v1beta1/proposals/'+item.proposal_id+'/votes/' + valSmallAddress)
-        console.log(checkIsVoted)
         item.votedValue = checkIsVoted.data.vote.options[0].option
       });
-    }*/
+    }
 
     commit('setAllProposals', getAllProposals.data.proposals)
   },
@@ -255,7 +253,6 @@ export const actions = {
     const offlineSigner = await window.getOfflineSignerAuto(chainId);
     const accounts = await offlineSigner.getAccounts();
     const getKey = await window.keplr.getKey(chainId);
-    // console.log('addr: '+accounts[0].address)
     commit('setAddrWallet', accounts[0].address)
     commit('setNameWallet', getKey.name)
     dispatch('getAccountData')

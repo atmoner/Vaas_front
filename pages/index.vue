@@ -279,21 +279,9 @@
             <v-row>
               <v-col cols="12">
                 <v-container fluid>
-
                   <v-checkbox v-model="select" label="Withdraw Delegator" value="withdrawDelegator"></v-checkbox>
                   <v-checkbox v-model="select" label="Withdraw Validator" value="withdrawValidator"></v-checkbox>
                 </v-container>
-                <!--<v-combobox
-                    v-model="select"
-                    :items="items"
-                    item-title="title"
-                    item-value="val"
-                    label="Select a favorite activity or create a new one"
-                    multiple
-                    return-object
-                    chips
-                    closable-chips
-                  ></v-combobox>-->
               </v-col>
             </v-row>
           </v-card-text>
@@ -410,19 +398,9 @@ export default {
 
   methods: {
     async changeChain(chain) {
-
-      console.log('change chain ' + chain)
-
       await this.$store.dispatch('data/changeChain', chain)
       await this.$store.dispatch('data/keplrConnect')
       await this.$store.dispatch('data/refresh')
-
-      /*const store = useDataStore()
-      store.chainSelected = chain
-      await store.keplrConnect()
-      await store.getWalletTx()
-      store.refreshData()
-      */
     },
     async refresh() {
        await this.$store.dispatch('data/refresh')
@@ -432,8 +410,6 @@ export default {
     },
     authzReward() {
       (async () => {
-        // const store = useDataStore()
-        // const { name, version, addrWallet, nameWallet } = storeToRefs(store)
 
         const chainId = cosmosConfig[this.chainSelected].chainId;
         await window.keplr.enable(chainId);
@@ -495,11 +471,8 @@ export default {
           },
         }
 
-        console.log([MsgExe])
         try {
           const result = await client.signAndBroadcast(this.addrWallet, [MsgExe], fee, '')
-          console.log(result)
-
           if(result.code !== 0) {
             this.authzReturnMsg = result.rawLog
           }
@@ -507,7 +480,6 @@ export default {
           this.dialogAuthzAction = false
           this.authzReturn = true
           this.finalTx = result.transactionHash
-          // store.refreshData()
           await this.$store.dispatch('data/refresh')
         } catch (error) {
           console.error(error)
